@@ -18,6 +18,7 @@
     const luobu_button = document.createElement("button")
     const luobu_text = document.createTextNode("玩")
     let roblosecurity;
+    var clicked = false;
     luobu_button.className = "btn-common-play-game-lg btn-primary-md btn-full-width"
     luobu_button.style = "margin-left: 5px; margin-right: 5px;";
     luobu_button.appendChild(luobu_text);
@@ -47,9 +48,20 @@
             },
             onload: function(response) {
                 //alert(JSON.stringify(response.responseHeaders.split("rbx-authentication-ticket: ")[1].split("\n")[0])) //Stupid fucking headers being returned as a string
-                ticket = response.responseHeaders.split("rbx-authentication-ticket: ")[1].split("\n")[0].replace("\r", "");
-                document.location.href = "roblox-player:1+launchmode:play+gameinfo:" + ticket + "+launchtime:1626753000000+placelauncherurl:https%3A%2F%2Fassetgame.s.robloxdev.cn%2Fgame%2FPlaceLauncher.ashx%3Frequest%3DRequestGame%26browserTrackerId%3D189146708336%26placeId%3D" + placeid + "+%26isPlayTogetherGame%3Dfalse%26joinAttemptId%3D" + uuid + "%26joinAttemptOrigin%3DPlayButton+browsertrackerid:189146708336+robloxLocale:en_us+gameLocale:en_us+channel:zflag+LaunchExp:InApp";
-                alert("Client launched!")
+                try {
+                    ticket = response.responseHeaders.split("rbx-authentication-ticket: ")[1].split("\n")[0].replace("\r", "");
+                    document.location.href = "roblox-player:1+launchmode:play+gameinfo:" + ticket + "+launchtime:1626753000000+placelauncherurl:https%3A%2F%2Fassetgame.s.robloxdev.cn%2Fgame%2FPlaceLauncher.ashx%3Frequest%3DRequestGame%26browserTrackerId%3D189146708336%26placeId%3D" + placeid + "+%26isPlayTogetherGame%3Dfalse%26joinAttemptId%3D" + uuid + "%26joinAttemptOrigin%3DPlayButton+browsertrackerid:189146708336+robloxLocale:en_us+gameLocale:en_us+channel:zflag+LaunchExp:InApp";
+                    alert("Client launched!")
+                } catch (e) {
+                    if (clicked == false) {
+                        alert("Failed to start game. Try refreshing the page. Clicking the join button again will prompt you to enter your ROBLOSECURITY again.")
+                        clicked = true
+                    } else {
+                        roblosecurity = prompt("What is your ROBLOSECURITY? I can't get it automatically due to obvious security reasons");
+                        GM_setValue("rs", roblosecurity);
+                        alert("ROBLOSECURITY updated. Please click play again.")
+                    }
+                }
             }
         })
     }
